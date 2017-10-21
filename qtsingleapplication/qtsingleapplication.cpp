@@ -47,7 +47,6 @@
 
 #include "qtsingleapplication.h"
 #include "qtlocalpeer.h"
-#include <QWidget>
 
 
 /*!
@@ -158,7 +157,7 @@ void QtSingleApplication::sysInit(const QString &appId)
 */
 
 QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled)
-    : QApplication(argc, argv, GUIenabled)
+    : QGuiApplication(argc, argv, GUIenabled)
 {
     sysInit();
 }
@@ -171,7 +170,7 @@ QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled
 */
 
 QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char **argv)
-    : QApplication(argc, argv)
+    : QGuiApplication(argc, argv)
 {
     sysInit(appId);
 }
@@ -273,11 +272,18 @@ QWidget* QtSingleApplication::activationWindow() const
 */
 void QtSingleApplication::activateWindow()
 {
-    if (actWin) {
-        actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
-        actWin->raise();
-        actWin->activateWindow();
-    }
+    auto wins = topLevelWindows();
+    if(wins.size() == 0)
+        return;
+
+    auto win = wins.first();
+    if (win == nullptr)
+        return;
+
+    auto newState = static_cast<Qt::WindowState>(win->windowState() & ~Qt::WindowMinimized);
+    win->setWindowState(newState);
+    win->raise();
+    win->requestActivate();
 }
 
 

@@ -45,7 +45,7 @@
 ****************************************************************************/
 
 
-#include <QtWidgets/QApplication>
+#include <QtGui/QGuiApplication>
 
 #ifdef Q_OS_UNIX
 #include <QtX11Extras/QtX11Extras>
@@ -69,7 +69,7 @@ class QtLocalPeer;
 #  define QT_QTSINGLEAPPLICATION_EXPORT
 #endif
 
-class QT_QTSINGLEAPPLICATION_EXPORT QtSingleApplication : public QApplication
+class QT_QTSINGLEAPPLICATION_EXPORT QtSingleApplication : public QGuiApplication
 {
     Q_OBJECT
 

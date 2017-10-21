@@ -20,9 +20,6 @@
 #define GUIBEHIND_H
 
 #include <QObject>
-#if defined(Q_WS_S60)
-#include <QNetworkSession>
-#endif
 
 #include "buddylistitemmodel.h"
 #include "recentlistitemmodel.h"
@@ -101,10 +98,6 @@ public:
     void setShowUpdateBanner(bool show);
     void setBuddyName(QString name);
     QString buddyName();
-
-#if defined(Q_WS_S60)
-    void initConnection();
-#endif
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -206,11 +199,6 @@ private:
     bool prepareStartTransfer(QString *ip, qint16 *port);
     void startTransfer(QStringList files);
     void startTransfer(QString text);
-
-#if defined(Q_WS_S60)
-    QNetworkSession *mNetworkSession;
-#endif
-
 };
 
 #endif // GUIBEHIND_H

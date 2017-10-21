@@ -12,9 +12,6 @@
 
 #include <QDir>
 #include <QFileInfo>
-#include <QApplication>
-#include <QQuickView>
-#include <QQmlEngine>
 
 #include <qplatformdefs.h> // MEEGO_EDITION_HARMATTAN
 
@@ -90,7 +87,7 @@ void QmlApplicationViewer::showExpanded()
 	show();
 }
 
-QApplication *createApplication(int &argc, char **argv)
+QGuiApplication *createApplication(int &argc, char **argv)
 {
-	return new QApplication(argc, argv);
+    return new QGuiApplication(argc, argv);
 }

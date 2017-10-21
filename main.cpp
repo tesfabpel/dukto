@@ -17,7 +17,9 @@
  */
 
 #include <QtWidgets/QApplication>
-//#include "qmlapplicationviewer.h"
+#include "qmlapplicationviewer.h"
+
+#include <QtNetwork/QSslSocket>
 
 #include "guibehind.h"
 #include "duktowindow.h"
@@ -38,6 +40,10 @@ int main(int argc, char *argv[])
         app.sendMessage("FOREGROUND");
         return 0;
     }
+
+    qDebug() << "SSL version use for build: " << QSslSocket::sslLibraryBuildVersionString();
+    qDebug() << "SSL version use for run-time: " << QSslSocket::sslLibraryVersionNumber();
+    qDebug() << QCoreApplication::libraryPaths();
 
     DuktoWindow viewer;
     GuiBehind gb(&viewer);
