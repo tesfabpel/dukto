@@ -172,11 +172,6 @@ public slots:
     void resetProgressStatus();
     void abortTransfer();
 
-#if defined(Q_WS_S60)
-    void connectOpened();
-    void connectError(QNetworkSession::SessionError error);
-#endif
-
 private:
     DuktoWindow *mView;
     QTimer *mShowBackTimer;

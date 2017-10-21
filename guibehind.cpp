@@ -25,20 +25,21 @@
 #include "updateschecker.h"
 
 #include <QHash>
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
+#include <QQuickView>
+#include <QtQml/QQmlContext>
+#include <QDateTime>
 #include <QTimer>
 #include <QDesktopServices>
 #include <QDir>
-#include <QFileDialog>
+#include <QtWidgets/QFileDialog>
 #include <QClipboard>
-#include <QApplication>
-#include <QDeclarativeProperty>
-#include <QGraphicsObject>
+#include <QtWidgets/QApplication>
+#include <QtQml/QQmlProperty>
+#include <QtWidgets/QGraphicsObject>
 #include <QRegExp>
 #include <QThread>
 #include <QTemporaryFile>
-#include <QDesktopWidget>
+#include <QtWidgets/QDesktopWidget>
 #if defined(Q_WS_S60)
 #define SYMBIAN
 #endif
@@ -128,9 +129,6 @@ GuiBehind::GuiBehind(DuktoWindow* view) :
     // Load GUI
     view->setSource(QUrl("qrc:/qml/dukto/Dukto.qml"));
     //view->setSource(QUrl::fromLocalFile("c:/users/emanuele/documenti/dukto/qml/dukto/Dukto.qml"));
-#ifndef Q_WS_S60
-    view->restoreGeometry(mSettings->windowGeometry());
-#endif
 
     // Start random rotate
     mShowBackTimer = new QTimer(this);
@@ -245,7 +243,7 @@ void GuiBehind::receiveFileComplete(QStringList *files, qint64 totalSize) {
 
     // Update GUI
     mView->win7()->setProgressState(EcWin7::NoProgress);
-    QApplication::alert(mView, 5000);
+	mView->alert(5000);
     emit receiveCompleted();
 }
 
@@ -256,7 +254,7 @@ void GuiBehind::receiveTextComplete(QString *text, qint64 totalSize)
 
     // Update GUI
     mView->win7()->setProgressState(EcWin7::NoProgress);
-    QApplication::alert(mView, 5000);
+    mView->alert(5000);
     emit receiveCompleted();
 }
 
@@ -281,21 +279,11 @@ void GuiBehind::openDestinationFolder()
 void GuiBehind::changeDestinationFolder()
 {
     // Show system dialog for folder selection
-    QString dirname = QFileDialog::getExistingDirectory(mView, "Change folder", ".",
+    QString dirname = QFileDialog::getExistingDirectory(nullptr, 
+		"Change folder", 
+		".",
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (dirname == "") return;
-
-#ifdef SYMBIAN
-    // Disable saving on C:
-    if (dirname.toUpper().startsWith("C:")) {
-
-        setMessagePageTitle("Destination");
-        setMessagePageText("Receiving data on C: is disabled for security reasons. Please select another destination folder.");
-        setMessagePageBackState("settings");
-        emit gotoMessagePage();
-        return;
-    }
-#endif
 
     // Set the new folder as current
     QDir::setCurrent(dirname);
@@ -354,7 +342,7 @@ void GuiBehind::sendDroppedFiles(QStringList *files)
 void GuiBehind::sendSomeFiles()
 {
     // Show file selection dialog
-    QStringList files = QFileDialog::getOpenFileNames(mView, "Send some files");
+    QStringList files = QFileDialog::getOpenFileNames(nullptr, "Send some files");
     if (files.count() == 0) return;
 
     // Send files
@@ -365,7 +353,7 @@ void GuiBehind::sendSomeFiles()
 void GuiBehind::sendFolder()
 {
     // Show folder selection dialog
-    QString dirname = QFileDialog::getExistingDirectory(mView, "Change folder", ".",
+    QString dirname = QFileDialog::getExistingDirectory(nullptr, "Change folder", ".",
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (dirname == "") return;
 

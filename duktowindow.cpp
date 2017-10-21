@@ -25,25 +25,29 @@
 #include <QDragMoveEvent>
 #include <QDragLeaveEvent>
 #include <QDropEvent>
+#include <QMimeData>
 
-DuktoWindow::DuktoWindow(QWidget *parent) :
-    QmlApplicationViewer(parent), mGuiBehind(NULL)
+DuktoWindow::DuktoWindow(QWindow *parent) :
+	QmlApplicationViewer(parent),
+	mGuiBehind(nullptr)
 {
     // Configure window
-    setAcceptDrops(true);
-    setWindowTitle("Dukto");
-#ifndef Q_WS_S60
-    setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
-    setMaximumSize(350, 5000);
-    setMinimumSize(350, 500);
-#endif
-    setOrientation(QmlApplicationViewer::ScreenOrientationLockPortrait);
-
+	auto w = dynamic_cast<QWidget *>(parent);
+	if(w != nullptr)
+	{
+		w->setAcceptDrops(true);
+		w->setWindowTitle("Dukto");
+		w->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+		w->setMaximumSize(350, 5000);
+		w->setMinimumSize(350, 500);
+		setOrientation(QmlApplicationViewer::ScreenOrientationLockPortrait);
+	}
+	
     // Taskbar integration with Win7
     mWin7.init(this->winId());
 }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 bool DuktoWindow::winEvent(MSG * message, long * result)
 {
     return mWin7.winEvent(message, result);
@@ -87,6 +91,6 @@ void DuktoWindow::dropEvent(QDropEvent *event)
 
 void DuktoWindow::closeEvent(QCloseEvent *event)
 {
-    mGuiBehind->settings()->saveWindowGeometry(saveGeometry());
+    //mGuiBehind->settings()->saveWindowGeometry(saveGeometry());
     mGuiBehind->close();
 }
